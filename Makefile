@@ -111,9 +111,9 @@ INC_FLAGS = $(addprefix $(INCLUDEFLAG), $(INC_FREERTOS) $(FREERTOS_PORT_SRC) $(D
 
 DEP_FRTOS_CONFIG = $(SRC)FreeRTOSConfig.h
 
-#
-# Make rules:
-#
+##########################################################################
+# RULES                                                                  #
+##########################################################################
 
 all : $(TARGET)
 
