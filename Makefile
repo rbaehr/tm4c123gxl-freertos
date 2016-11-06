@@ -38,6 +38,9 @@ DRIVERS_SRC = drivers/
 # Directory with demo specific source (and header) files
 SRC = src/
 
+# Subdir of src
+TASKDIR = tasks/
+
 # Intermediate directory for all *.o and other files:
 OBJDIR = obj/
 
@@ -88,8 +91,8 @@ UTILS_OBJS = $(wildcard $(OBJDIR)utils/*.o)
 
 TIVA_DRIVER_OBJS = $(DRIVERLIB_OBJS) $(UTILS_OBJS)
 
-# List of source file objects. Adds any c file in $(SRC) and $(SRC)tasks
-SRC_C_FILES = $(wildcard $(SRC)*.c) $(wildcard $(SRC)tasks/*.c)
+# List of source file objects. Adds any c file in $(SRC) and $(SRC)$(TASKDIR)
+SRC_C_FILES = $(wildcard $(SRC)*.c) $(wildcard $(SRC)$(TASKDIR)*.c)
 SRC_OBJS := $(SRC_C_FILES:$(SRC)%=%)
 SRC_OBJS := $(SRC_OBJS:.c=.o)
 
@@ -119,6 +122,9 @@ rebuild : clean all
 $(TARGET) : $(OBJDIR) $(ELF_IMAGE)
 	$(OBJCOPY) -O binary $(word 2,$^) $@
 
+tiva:
+	bash -c "make -C drivers/"
+
 $(OBJDIR) :
 	mkdir -p $@
 
@@ -132,13 +138,16 @@ debug_rebuild : _debug_flags rebuild
 _debug_flags :
 	$(eval CFLAGS += $(DEB_FLAG))
 
+$(TASKDIR) :
+	mkdir -p $(OBJDIR)$(TASKDIR)
 
-# Objects for files in $(SRC) and $(SRC)tasks
-$(OBJDIR)%.o: $(SRC)%.c $(wildcard $(SRC)%.h)
+
+# Objects for files in $(SRC) and $(SRC)$(TASKDIR)
+$(OBJDIR)%.o: $(SRC)%.c $(wildcard $(SRC)%.h) $(TASKDIR)
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
-$(OBJDIR)tasks/%.o: $(SRC)tasks/%.c $(wildcard $(SRC)tasks/%.h)
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+#$(OBJDIR)$(TASKDIR)%.o: $(TASKDIR) $(SRC)$(TASKDIR)%.c $(wildcard $(SRC)$(TASKDIR)%.h) 
+#	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 
 # Make objects for the FreeRTOS Files
