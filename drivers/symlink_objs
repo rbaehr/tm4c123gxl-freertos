@@ -1,0 +1,17 @@
+#!/bin/bash
+
+PWD=$(pwd)
+
+mkdir -p ../obj
+
+rm $PWD/../obj/driverlib
+rm $PWD/../obj/grlib
+rm $PWD/../obj/sensorlib
+rm $PWD/../obj/usblib
+rm $PWD/../obj/utils
+
+ln -s $PWD/driverlib/gcc $PWD/../obj/driverlib
+#ln -s $PWD/grlib/gcc $PWD/../obj/grlib
+#ln -s $PWD/sensorlib/gcc $PWD/../obj/sensorlib
+#ln -s $PWD/usblib/gcc $PWD/../obj/usblib
+ln -s $PWD/utils/gcc $PWD/../obj/utils
